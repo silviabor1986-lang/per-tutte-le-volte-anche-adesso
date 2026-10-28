@@ -444,6 +444,15 @@
         st.appendChild(n);
         q.appendChild(st);
         art.appendChild(q);
+      } else if (b.t === 'link') {
+        var pl = el('p', 'lettera-par');
+        var al = el('a', 'supporto-link', b.s);
+        al.href = b.href;
+        al.target = '_blank';
+        al.rel = 'noopener noreferrer';
+        al.setAttribute('aria-label', b.s + ' (si apre in una nuova scheda)');
+        pl.appendChild(al);
+        art.appendChild(pl);
       } else if (b.t === 'nota') {
         art.appendChild(mdEl('p', 'supporto-nota', b.s));
       }

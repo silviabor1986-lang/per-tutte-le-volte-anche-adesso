@@ -413,7 +413,7 @@ window.TESTI5 = {
    },
    {
     "t": "h",
-    "s": "Qualcuno con cui parlare, anche di notte"
+    "s": "Qualcuno con cui parlare"
    },
    {
     "t": "tel",
@@ -421,11 +421,16 @@ window.TESTI5 = {
    },
    {
     "t": "p",
-    "s": "Ascolto di volontari, ogni giorno, 24 ore su 24. Non è un servizio sanitario e non sostituisce il 112 nelle emergenze. L'ascolto è gratuito; la chiamata ha il costo previsto dal tuo operatore."
+    "s": "Servizio di ascolto telefonico offerto da volontari. Per gli orari aggiornati, consulta il sito ufficiale di Telefono Amico Italia. Non è un servizio sanitario e non sostituisce il 112 nelle emergenze. L'ascolto è gratuito; la chiamata ha il costo previsto dal tuo operatore."
+   },
+   {
+    "t": "link",
+    "s": "Sito ufficiale di Telefono Amico Italia",
+    "href": "https://www.telefonoamico.it/"
    },
    {
     "t": "nota",
-    "s": "*Questa app non riceve messaggi e non può risponderti. I servizi indicati sono esterni e indipendenti dall'app. Questa pagina non sostituisce il parere di un medico o di uno psicologo. Contatti verificati il 24 ottobre 2026.*"
+    "s": "*Questa app non riceve messaggi e non può risponderti. I servizi indicati sono esterni e indipendenti dall'app. Questa pagina non sostituisce il parere di un medico o di uno psicologo. Per informazioni aggiornate su numeri e orari, consulta i siti ufficiali dei servizi indicati.*"
    }
   ]
  }
