@@ -1,6 +1,6 @@
 /* GENERATO da strumenti/genera_sw.py: non modificare a mano. */
 'use strict';
-var VERSIONE = 'ptlv-app-060cdba8d514';
+var VERSIONE = 'ptlv-app-520fc30ecfe6';
 var CACHE_HD = 'ptlv-sfondi-hd';
 var FILE = [
   "./",
