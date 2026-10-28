@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="it" data-tema="giorno" data-aspetto="sistema">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Per tutte le volte, anche adesso</title>
+<meta name="theme-color" content="#e9d6c8">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="css/app.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="img/icone/icona-192.png">
+<link rel="apple-touch-icon" href="img/icone/apple-touch-icon-180.png">
+<!-- Applica l'aspetto scelto prima del primo disegno della pagina (nessun lampeggio) -->
+<script src="js/stato.js"></script>
+</head>
+<body>
+<div id="sfondo" aria-hidden="true"></div>
+
+<noscript>
+  <p class="avviso-js">Per usare l'app serve JavaScript attivo nel browser.</p>
+</noscript>
+
+<main id="app">
+
+  <!-- S0 · Benvenuto (solo alla prima apertura; riempito da js/fase5.js) -->
+  <section id="vista-benvenuto" class="vista" hidden></section>
+
+  <!-- S1 · Scrivania -->
+  <section id="vista-scrivania" class="vista" aria-labelledby="titolo-scrivania">
+    <header class="intestazione">
+      <h1 id="titolo-scrivania" tabindex="-1">Come ti senti adesso?</h1>
+      <p>Tocca una busta.</p>
+    </header>
+
+    <!-- Ordine fisso delle 11 buste (W2 §3.1 B): le buste vengono inserite da js/app.js -->
+    <nav class="buste" id="buste" aria-label="Come ti senti adesso?"></nav>
+
+    <p class="momento"><a href="#/momenti">Oppure scegli un momento →</a></p>
+
+    <p class="cassetto"><a class="pulsante pulsante-cassetto" href="#/cassetto"
+       aria-label="Cassetto della scrivania. Apri per leggere una frase del libro.">Apri il cassetto</a></p>
+
+    <nav class="accessi" aria-label="Sezioni dell'app">
+      <a href="#/scatola">La scatola dei ricordi</a>
+      <a href="#/sfondi">Sfondi per il telefono</a>
+      <a href="#/libro">Il libro</a>
+    </nav>
+
+    <footer class="piede">
+      <div class="aspetto" role="group" aria-label="Aspetto dell'app: giorno, notte o come il telefono">
+        <span class="aspetto-titolo" aria-hidden="true">Aspetto:</span>
+        <button type="button" data-aspetto="giorno" aria-pressed="false">Giorno</button>
+        <button type="button" data-aspetto="notte" aria-pressed="false">Notte</button>
+        <button type="button" data-aspetto="sistema" aria-pressed="true">Come il telefono</button>
+      </div>
+      <p class="link-piede">
+        <a href="#/privacy">Privacy e i tuoi dati</a>
+        <a href="#/supporto">Se il peso diventa troppo</a>
+      </p>
+    </footer>
+  </section>
+
+  <!-- S2 · Lettera (riempita da js/lettere.js) -->
+  <section id="vista-lettera" class="vista" hidden></section>
+
+  <!-- S1b · Momenti, scheda del momento, S3 · Scatola dei ricordi (riempite da js/scatola.js) -->
+  <section id="vista-extra" class="vista" hidden></section>
+
+  <!-- Schermate delle fasi successive (segnaposto tecnico) e pagina non trovata -->
+  <section id="vista-altra" class="vista" hidden>
+    <a class="indietro" href="#/" id="indietro" aria-label="Torna alla schermata precedente">← Indietro</a>
+    <div class="pannello">
+      <h1 id="titolo-altra" tabindex="-1"></h1>
+      <p id="testo-altra"></p>
+      <p><a class="pulsante" id="vai-scrivania" href="#/" hidden>Vai alla scrivania</a></p>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/contenuti.js"></script>
+<script src="js/cassetto.js"></script>
+<script src="js/testi_fase5.js"></script>
+<script src="js/oggetti_momenti.js"></script>
+<script src="js/scatola.js"></script>
+<script src="js/fase4.js"></script>
+<script src="js/fase5.js"></script>
+<script src="js/cartolina.js"></script>
+<script src="js/lettere.js"></script>
+<script src="js/app.js"></script>
+<script src="js/offline.js"></script>
+</body>
+</html>

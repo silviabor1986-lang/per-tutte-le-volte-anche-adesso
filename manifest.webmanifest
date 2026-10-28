@@ -1,0 +1,31 @@
+{
+  "name": "Per tutte le volte, anche adesso",
+  "short_name": "Per tutte le volte, anche adesso",
+  "lang": "it",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#e9d6c8",
+  "theme_color": "#e9d6c8",
+  "icons": [
+    {
+      "src": "img/icone/icona-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icone/icona-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icone/icona-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

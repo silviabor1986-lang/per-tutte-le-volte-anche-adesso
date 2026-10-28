@@ -1,0 +1,848 @@
+/* Per tutte le volte, anche adesso — Fase 1: scrivania mobile-first */
+
+@font-face {
+  font-family: "Lora";
+  src: url("../fonts/lora-normale.woff") format("woff");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Lora";
+  src: url("../fonts/lora-corsivo.woff") format("woff");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ---------- Colori ---------- */
+:root {
+  --testo: #3b2a3a;
+  --pannello: rgba(250, 241, 232, 0.80);
+  --velo: rgba(250, 241, 232, 0.46);
+  --velo-0: rgba(250, 241, 232, 0);
+  --velo-forte: rgba(250, 243, 236, 0.80);
+  --linea: rgba(59, 42, 58, 0.16);
+  --ombra-testo: 0 0 10px rgba(250, 241, 232, 0.85);
+  --busta: #f5ede4;
+  --busta-testo: #3b2a3a;
+  --busta-bordo: #c9b8ad;
+  --lembo: #b3a49b;
+  --pulsante: rgba(250, 243, 236, 0.94);
+  --pulsante-testo: #3b2a3a;
+  --pulsante-bordo: #bda99d;
+  --sfondo-pagina: #e9d6c8;
+  --focus: #5a3777;
+  --ombra: 0 1px 2px rgba(59, 42, 58, 0.25), 0 4px 10px rgba(59, 42, 58, 0.12);
+  --sfondo-scrivania: url("../img/scrivania/scrivania-giorno.webp");
+  --carta: #f6ecdf;
+  --carta-testo: #3b2a3a;
+  --carta-tenue: #6b5566;
+  --carta-bordo: #cdbbad;
+  --cera: #8a3f58;
+  --cera-chiara: #a65471;
+  --cera-testo: #fff7f1;
+}
+html[data-tema="notte"] {
+  --testo: #fbf1e6;
+  --pannello: rgba(34, 30, 74, 0.72);
+  --velo: rgba(34, 30, 74, 0.64);
+  --velo-0: rgba(34, 30, 74, 0);
+  --velo-forte: rgba(34, 30, 74, 0.78);
+  --linea: rgba(251, 241, 230, 0.20);
+  --ombra-testo: 0 1px 8px rgba(20, 16, 50, 0.85);
+  --busta: #e8e3f0;
+  --busta-testo: #3b2a3a;
+  --busta-bordo: #a89fc4;
+  --lembo: #9a90b8;
+  --pulsante: rgba(40, 36, 84, 0.92);
+  --pulsante-testo: #fbf1e6;
+  --pulsante-bordo: #8c82b4;
+  --sfondo-pagina: #1f1c3d;
+  --focus: #ffd9a8;
+  --ombra: 0 1px 2px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
+  --sfondo-scrivania: url("../img/scrivania/scrivania-notte.webp");
+  --carta: #5a4650;
+  --carta-testo: #fbf1e6;
+  --carta-tenue: #e6d8e0;
+  --carta-bordo: #7a6270;
+  --cera: #9c4a66;
+  --cera-chiara: #b9627f;
+  --cera-testo: #fffaf5;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--sfondo-pagina);
+  color: var(--testo);
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 1.125rem;          /* 18 px, ridimensionabile */
+  line-height: 1.5;
+}
+[hidden] { display: none !important; }
+
+/* L'illustrazione della scrivania occupa tutto lo schermo senza deformarsi (cover, centrata).
+   Su schermi larghi resta una colonna con le stesse proporzioni di uno smartphone. */
+#sfondo {
+  position: fixed;
+  top: 0; bottom: 0; left: 0; right: 0;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  z-index: -1;
+  background-color: var(--sfondo-pagina);
+  background-image: var(--sfondo-scrivania);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#app {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 max(20px, env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+}
+
+h1 { font-weight: 700; margin: 0; line-height: 1.2; }
+h1:focus { outline: none; }
+a { color: inherit; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+
+/* ---------- Intestazione ---------- */
+.intestazione {
+  margin: calc(36px + env(safe-area-inset-top)) -20px 0;
+  padding: 30px 20px 28px;
+  text-align: center;
+  /* velo leggero con bordi sfumati: si fonde con la scrivania, il testo resta leggibile */
+  background: linear-gradient(to bottom, var(--velo-0), var(--velo) 26%, var(--velo) 74%, var(--velo-0));
+  text-shadow: var(--ombra-testo);
+}
+.intestazione h1 { font-size: clamp(1.6rem, 7.4vw, 2.1rem); }
+.intestazione p { margin: 6px 0 0; font-size: 1.15rem; }
+
+/* ---------- Buste ---------- */
+/* Composizione naturale: le buste sono appoggiate in modo irregolare, tutte nella stessa composizione.
+   Posizioni e dimensioni sono percentuali della larghezza: la composizione scala senza sovrapposizioni
+   a qualsiasi larghezza. --alt = altezza della composizione (in % della larghezza). */
+.buste {
+  --alt: 246;
+  position: relative;
+  width: calc(100% + 24px);
+  margin: 8px -12px 0;
+  aspect-ratio: 100 / var(--alt);
+  container-type: inline-size;
+}
+.busta {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) / var(--alt) * 100%);
+  width: 44%;
+  aspect-ratio: 1.75 / 1;
+  transform: rotate(var(--r));
+  color: var(--busta-testo);
+  text-decoration: none;
+  background-color: var(--busta);
+  background-image: linear-gradient(rgba(255,255,255,0.45), rgba(255,255,255,0.45)), url("../img/carta/carta.webp");
+  background-size: auto, 256px 256px;
+  background-blend-mode: normal, multiply;
+  border: 1px solid var(--busta-bordo);
+  border-radius: 7px;
+  box-shadow: var(--ombra);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.busta:active { transform: rotate(var(--r)) scale(0.985); }
+@media (hover: hover) {
+  .busta:hover { transform: rotate(var(--r)) translateY(-2px); }
+}
+/* Posizione (x, y in % della larghezza) e inclinazione di ciascuna busta, nell'ordine approvato delle emozioni */
+.busta:nth-child(1) { --x: 3; --y: 2; --r: -2.6deg; } /* Stanca */
+.busta:nth-child(2) { --x: 52.5; --y: 8; --r: 2.1deg; } /* Sola */
+.busta:nth-child(3) { --x: 21; --y: 40; --r: 1.4deg; } /* Sopraffatta */
+.busta:nth-child(4) { --x: 3; --y: 75; --r: 2.8deg; } /* Nostalgica */
+.busta:nth-child(5) { --x: 52; --y: 71; --r: -1.9deg; } /* In colpa */
+.busta:nth-child(6) { --x: 32; --y: 108; --r: -2.2deg; } /* Invisibile */
+.busta:nth-child(7) { --x: 3; --y: 139; --r: -1.5deg; } /* Arrabbiata */
+.busta:nth-child(8) { --x: 53; --y: 144; --r: 2.9deg; } /* Leggera */
+.busta:nth-child(9) { --x: 17; --y: 177; --r: 2.2deg; } /* Sbagliata */
+.busta:nth-child(10) { --x: 2.5; --y: 210; --r: 2.5deg; } /* Giudicata */
+.busta:nth-child(11) { --x: 52.5; --y: 216; --r: -2.7deg; } /* Persa */
+
+.busta-lembo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.busta-lembo polyline { stroke: var(--lembo); stroke-width: 1; }
+.francobollo {
+  position: absolute;
+  top: 9%;
+  right: 5%;
+  width: 19%;
+  aspect-ratio: 120 / 179;
+  background-image: var(--f-giorno);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+html[data-tema="notte"] .francobollo { background-image: var(--f-notte); }
+.busta-nome {
+  position: absolute;
+  left: 7%;
+  bottom: 9%;
+  font-weight: 700;
+  font-size: clamp(0.92rem, 4.7vw, 1.2rem);
+  font-size: clamp(0.92rem, 5.4cqw, 1.3rem);
+  line-height: 1.15;
+}
+
+/* ---------- Altri elementi della scrivania ---------- */
+.momento, .cassetto { text-align: center; margin: 14px 0 0; }
+.momento a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 18px;
+  border-radius: 999px;
+  background: var(--pannello);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.momento a:hover { text-decoration: underline; }
+
+.pulsante {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 8px 18px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--pulsante-testo);
+  background: var(--pulsante);
+  border: 1px solid var(--pulsante-bordo);
+  border-radius: 12px;
+  box-shadow: var(--ombra);
+  -webkit-tap-highlight-color: transparent;
+}
+.pulsante:active { transform: translateY(1px); }
+.pulsante-cassetto {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 46px;
+  padding: 6px 26px;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 999px;
+  background: var(--velo-forte);
+  border-color: var(--linea);
+  box-shadow: none;
+}
+
+/* Accessi alle sezioni: un unico riquadro discreto, come un foglio appoggiato sulla scrivania */
+.accessi {
+  margin-top: 22px;
+  border-radius: 14px;
+  border: 1px solid var(--linea);
+  background: var(--velo-forte);
+  overflow: hidden;
+}
+.accessi a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 6px 16px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  -webkit-tap-highlight-color: transparent;
+}
+.accessi a + a { border-top: 1px solid var(--linea); }
+.accessi a:active { background: var(--linea); }
+.accessi a:focus-visible { outline-offset: -3px; }
+
+/* ---------- Piè di pagina ---------- */
+.piede {
+  margin: 26px -20px 0;
+  padding: 16px 20px 14px;
+  text-align: center;
+  background: var(--pannello);
+  font-size: 1rem;
+}
+.aspetto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.aspetto-titolo { font-weight: 600; margin-right: 2px; }
+.aspetto button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 14px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--pulsante-testo);
+  background: var(--pulsante);
+  border: 1px solid var(--pulsante-bordo);
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.aspetto button[aria-pressed="true"] {
+  background: var(--testo);
+  color: var(--sfondo-pagina);
+  border-color: var(--testo);
+}
+.link-piede {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 22px;
+  margin: 8px 0 0;
+}
+.link-piede a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* ---------- Schermate delle fasi successive e pagina non trovata ---------- */
+.indietro {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: calc(18px + env(safe-area-inset-top));
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: var(--pannello);
+  text-decoration: none;
+  font-weight: 600;
+}
+.pannello {
+  margin-top: 18px;
+  padding: 22px 20px;
+  border-radius: 14px;
+  background: var(--pannello);
+}
+.pannello h1 { font-size: 1.7rem; }
+.pannello p { margin: 12px 0 0; }
+.pannello .pulsante { display: inline-flex; }
+
+.avviso-js { margin: 20px; padding: 16px; background: var(--pannello); border-radius: 10px; }
+
+
+/* ---------- Fase 2: lettera ---------- */
+body.lettura #sfondo { opacity: 0.38; }
+
+.lettera-alto { display: flex; }
+.lettera {
+  margin-top: 10px;
+  padding: 30px 24px 34px;
+  color: var(--carta-testo);
+  background-color: var(--carta);
+  background-image: url("../img/carta/carta.webp");
+  background-size: 256px 256px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--carta-bordo);
+  border-radius: 6px;
+  box-shadow: var(--ombra);
+}
+/* Notte: stessa carta, texture attenuata sul colore notturno */
+html[data-tema="notte"] .lettera {
+  position: relative;
+  isolation: isolate;
+  background-color: #5a4550;
+  background-image: radial-gradient(ellipse at 20% 0%, rgba(255, 214, 170, 0.14), rgba(255, 214, 170, 0) 70%);
+  background-size: 100% 100%;
+  background-blend-mode: normal;
+}
+/* Stessa texture della carta definitiva, scurita e con grana più marcata, sotto il testo */
+html[data-tema="notte"] .lettera::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: url("../img/carta/carta.webp") 0 0 / 256px 256px;
+  filter: brightness(0.55) contrast(4) brightness(0.52) sepia(0.4);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.lettera-etichetta {
+  margin: 0 0 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--carta-tenue);
+}
+.lettera-dedica {
+  margin: 0 0 1.3em;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.lettera-par {
+  margin: 0 0 0.75em;
+  font-size: 1.1875rem;         /* 19 px, ridimensionabile */
+  line-height: 1.72;
+  overflow-wrap: break-word;
+}
+
+/* Sigillo di cera */
+.sigillo-area { margin: 30px 0 0; text-align: center; }
+.sigillo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 136px;
+  height: 128px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 52% 48% 54% 46% / 47% 55% 45% 53%;
+  background: radial-gradient(circle at 36% 30%, var(--cera-chiara), var(--cera) 68%);
+  color: var(--cera-testo);
+  font: italic 600 1.02rem/1.25 "Lora", Georgia, serif;
+  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.10), inset 0 -3px 8px rgba(0, 0, 0, 0.25), 0 3px 8px rgba(40, 20, 30, 0.35);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s ease;
+}
+.sigillo:active { transform: scale(0.97); }
+.sigillo-testo { display: block; max-width: 6.2em; }
+.sigillo-aiuto { margin: 12px 0 0; font-size: 0.95rem; color: var(--carta-tenue); }
+.nascosto { padding-top: 22px; border-top: 1px solid var(--carta-bordo); animation: compare 0.6s ease both; }
+.nascosto-testo {
+  margin: 0;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+.nascosto-testo:focus { outline: none; }
+
+/* Nel libro */
+.nel-libro {
+  margin-top: 18px;
+  padding: 22px 20px 20px;
+  border-radius: 14px;
+  background: var(--pannello);
+}
+.nel-libro h2 { margin: 0; font-size: 1.3rem; }
+.nel-libro-intro { margin: 8px 0 0; }
+.elenco-rif { list-style: none; margin: 12px 0 14px; padding: 0; }
+.rif {
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0;
+  border-top: 1px solid var(--linea);
+  line-height: 1.45;
+}
+.rif:first-child { border-top: 0; }
+.rif-titolo { font-style: italic; }
+.rif-pag { flex: none; font-variant-numeric: tabular-nums; color: var(--carta-tenue); }
+html:not([data-tema="notte"]) .rif-pag { color: #5b4658; }
+html[data-tema="notte"] .rif-pag { color: #d9cfe6; }
+.mostra-tutte { width: 100%; font-size: 1rem; font-family: inherit; cursor: pointer; }
+.rif-extra { animation: compare 0.4s ease both; }
+
+/* Piede della lettera */
+.lettera-piede { display: grid; gap: 6px; margin-top: 18px; }
+.lettera-piede .pulsante { width: 100%; }
+.link-supporto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  font-size: 0.98rem;
+  color: var(--testo);
+  text-shadow: var(--ombra-testo);
+}
+.indietro:focus-visible, .sigillo:focus-visible, .pulsante:focus-visible, .link-supporto:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* Entrata della lettera e apertura della busta (soli CSS, interrompibili con un tocco) */
+@keyframes compare { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes dissolvi { from { opacity: 0; } to { opacity: 1; } }
+.vista.entra > .lettera, .vista.entra > .nel-libro { animation: compare 0.7s ease 0.35s both; }
+.vista.entra-dissolvi > .lettera { animation: dissolvi 0.35s ease both; }
+
+.apertura {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--velo-forte);
+  perspective: 800px;
+  animation: apertura-esci 0.35s ease 0.55s forwards;
+}
+.apertura-busta {
+  position: relative;
+  width: min(70vw, 300px);
+  aspect-ratio: 1.75 / 1;
+  background-color: var(--busta);
+  background-image: linear-gradient(rgba(255,255,255,0.45), rgba(255,255,255,0.45)), url("../img/carta/carta.webp");
+  background-size: auto, 256px 256px;
+  background-blend-mode: normal, multiply;
+  border: 1px solid var(--busta-bordo);
+  border-radius: 7px;
+  box-shadow: var(--ombra);
+  color: var(--busta-testo);
+  animation: apertura-busta 0.9s ease both;
+}
+.apertura-lembo {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 54%;
+  background: var(--lembo);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  animation: apertura-lembo 0.5s ease 0.1s forwards;
+}
+.apertura-nome {
+  position: absolute;
+  left: 7%; bottom: 9%;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+@keyframes apertura-lembo { to { transform: rotateX(180deg); opacity: 0.4; } }
+@keyframes apertura-busta { 0% { transform: scale(0.96); } 60% { transform: scale(1); } 100% { transform: translateY(14px) scale(1); } }
+@keyframes apertura-esci { to { opacity: 0; visibility: hidden; } }
+
+
+/* ---------- Fase 3: momenti, scoperta degli oggetti, Scatola dei ricordi ---------- */
+[tabindex="-1"]:focus { outline: none; }
+
+.lista-momenti { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
+.pannello .momento-voce { display: flex; justify-content: flex-start; min-height: 58px; padding: 10px 20px; font-size: 1.15rem; }
+.momento-titolo { margin: 0 0 18px; font-size: 1.5rem; line-height: 1.25; }
+
+/* Oggetti: sempre nella loro cornice chiara (di notte con un leggero alone); nessun filtro sui colori */
+.oggetto-cornice {
+  width: min(62%, 200px);
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  background: radial-gradient(circle at 30% 20%, #fffaf3, #f3e5d4);
+  box-shadow: inset 0 0 0 1px rgba(150, 120, 100, 0.25), 0 2px 10px rgba(60, 40, 50, 0.18);
+}
+html[data-tema="notte"] .oggetto-cornice {
+  background: radial-gradient(circle at 30% 20%, #fbefdf, #ecd9c3);
+  box-shadow: inset 0 0 0 1px rgba(150, 120, 100, 0.3), 0 0 24px rgba(255, 214, 170, 0.38);
+}
+.oggetto-cornice img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+.scoperta, .scoperta-gia, .scheda-oggetto { text-align: center; }
+.scoperta, .scoperta-gia {
+  margin: 18px 0 0;
+  padding: 22px 20px;
+  border-radius: 14px;
+  background: var(--pannello);
+}
+.scoperta-gia { padding: 16px 20px; }
+.scoperta-titolo { margin: 16px 0 0; font-size: 1.1rem; font-weight: 600; }
+.scoperta-frase { margin: 10px 0 0; font-size: 1.15rem; font-style: italic; line-height: 1.55; }
+.scoperta-nota { margin: 10px 0 0; font-size: 1rem; }
+.scoperta-continua { margin: 18px auto 0; min-width: 160px; font-family: inherit; cursor: pointer; }
+.scoperta .oggetto-cornice { animation: scoperta-entra 1.4s ease both; }
+.scoperta > p, .scoperta > button { animation: dissolvi 0.8s ease 0.7s both; }
+.scoperta.attesa .oggetto-cornice, .scoperta.attesa > p, .scoperta.attesa > button { animation-play-state: paused; }
+@keyframes scoperta-entra { from { opacity: 0; transform: translateY(-14px) scale(0.9); } to { opacity: 1; transform: none; } }
+
+.momento-buste { margin: 18px 0 0; padding: 22px 20px 20px; border-radius: 14px; background: var(--pannello); }
+.momento-buste h2 { margin: 0; font-size: 1.3rem; }
+.griglia-buste { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.busta-mini {
+  position: relative;
+  display: block;
+  aspect-ratio: 1.75 / 1;
+  overflow: hidden;
+  color: var(--busta-testo);
+  text-decoration: none;
+  background-color: var(--busta);
+  background-image: linear-gradient(rgba(255,255,255,0.45), rgba(255,255,255,0.45)), url("../img/carta/carta.webp");
+  background-size: auto, 256px 256px;
+  background-blend-mode: normal, multiply;
+  border: 1px solid var(--busta-bordo);
+  border-radius: 7px;
+  box-shadow: var(--ombra);
+  -webkit-tap-highlight-color: transparent;
+}
+.busta-mini:active { transform: scale(0.985); }
+.busta-mini .busta-nome { font-size: 0.98rem; }
+.busta-mini:focus-visible, .oggetto-tile:focus-visible, .momento-voce:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.ripiano-titolo { margin: 22px 0 0; font-size: 1.25rem; }
+.ripiano-nota { margin: 6px 0 0; }
+.griglia-oggetti { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 14px; }
+@media (min-width: 500px) { .griglia-oggetti { grid-template-columns: repeat(3, 1fr); } }
+.oggetto-tile { display: block; color: inherit; text-decoration: none; text-align: center; -webkit-tap-highlight-color: transparent; }
+.oggetto-tile .oggetto-cornice { width: 100%; }
+.oggetto-nome { display: block; margin-top: 8px; font-size: 0.95rem; line-height: 1.3; }
+.scheda-oggetto .scheda-titolo { margin: 18px 0 0; font-size: 1.4rem; }
+/* Apertura della scheda di un oggetto già trovato: dissolvenza delicata con 6 px di movimento (non è l'animazione di prima scoperta) */
+.scheda-oggetto { animation: scheda-apri 0.4s ease both; }
+@keyframes scheda-apri { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Oggetto che entra nella scatola («Continua») e apertura della scatola */
+.scoperta.esce { animation: esci-dissolvi 0.3s ease 0.7s forwards; }
+.scoperta.esce > p, .scoperta.esce > button { animation: esci-dissolvi 0.35s ease forwards; animation-play-state: running; }
+.scoperta.esce .oggetto-cornice { animation: scatola-entra 1s ease-in forwards; animation-play-state: running; }
+@keyframes scatola-entra { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(48px) scale(0.4); } }
+@keyframes esci-dissolvi { from { opacity: 1; } to { opacity: 0; } }
+
+.pannello.apre { animation: scatola-apri 0.6s ease both; }
+.pannello.apre .griglia-oggetti li { animation: dissolvi 0.35s ease 0.2s both; }
+.pannello.apre.salta, .pannello.apre.salta .griglia-oggetti li { animation: none; }
+@keyframes scatola-apri { from { opacity: 0; transform: translateY(8px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+/* ---------- Fase 4: ♡ Tieni, Le parole che tengo, cassetto ---------- */
+:root { --legno: #b58a66; --legno-chiaro: #cfa682; --legno-scuro: #8c6648; }
+html[data-tema="notte"] { --legno: #5e4a6a; --legno-chiaro: #75607f; --legno-scuro: #43344f; }
+.solo-schermo { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Pulsante ♡ Tieni */
+.tieni-riga { margin: 22px 0 0; text-align: center; }
+.tieni-bottone { display: inline-flex; width: auto; min-width: 200px; font-family: inherit; cursor: pointer; transition: background-color 0.25s ease, border-color 0.25s ease; }
+.tieni-bottone.salvata { border-color: var(--cera); }
+.tieni-cuore { display: inline-block; margin-right: 0.4em; color: inherit; transition: color 0.25s ease; }
+.tieni-bottone.salvata .tieni-cuore { color: var(--cera-chiara); }
+html:not([data-tema="notte"]) .tieni-bottone.salvata .tieni-cuore { color: var(--cera); }
+.tieni-cuore.batte { animation: cuore-batte 0.5s ease-out both; }
+.tieni-cuore.sfuma { animation: cuore-sfuma 0.4s ease both; }
+@keyframes cuore-batte { 0% { transform: scale(0.8); opacity: 0.4; } 55% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes cuore-sfuma { from { opacity: 0.25; } to { opacity: 1; } }
+.tieni-esito { min-height: 1.5em; margin: 8px 0 0; font-size: 0.95rem; color: var(--carta-tenue); opacity: 0; transition: opacity 0.4s ease; }
+.tieni-esito.visibile { opacity: 1; }
+.nascosto .tieni-riga { margin-top: 18px; }
+
+/* Le parole che tengo */
+.ripiano-parole { margin-top: 4px; }
+.ripiano-parole .ripiano-titolo { margin-top: 18px; }
+.ripiano-parole .ripiano-titolo:focus { outline: none; }
+.parole-elenco { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 12px; }
+.parola { border: 1px solid var(--carta-bordo); border-radius: 8px; color: var(--carta-testo); background-color: var(--carta); background-image: url("../img/carta/carta.webp"); background-size: 256px 256px; background-blend-mode: multiply; box-shadow: var(--ombra); }
+html[data-tema="notte"] .parola { background-image: none; }
+.parola-testa { display: block; width: 100%; min-height: 56px; padding: 14px 16px; border: 0; background: none; color: inherit; text-align: left; font: inherit; cursor: pointer; border-radius: 8px; }
+.parola-testa:focus-visible, .tieni-bottone:focus-visible, .parola-togli:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.parola-anteprima { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.55; overflow-wrap: break-word; }
+.parola-da { display: block; margin-top: 8px; font-size: 0.9rem; color: var(--carta-tenue); }
+.parola-testa[aria-expanded="true"] .parola-anteprima { display: none; }
+.parola-testa[aria-expanded="true"] .parola-da { margin-top: 0; }
+.parola-corpo { padding: 0 16px 18px; animation: dissolvi 0.35s ease both; }
+.parola-corpo .parola-par, .parola-corpo .parola-dedica { margin: 0 0 0.7em; line-height: 1.65; overflow-wrap: break-word; }
+.parola-corpo .parola-dedica { font-weight: 700; }
+.parola-frase .parola-par, .parola-nascosto .parola-par { font-style: italic; font-size: 1.15rem; }
+.parola-togli { margin-top: 10px; width: 100%; font-family: inherit; cursor: pointer; }
+.pannello .parola-togli { display: flex; }
+.parola.esce { animation: esci-dissolvi 0.3s ease forwards; }
+.parole-esito { min-height: 1.4em; margin: 10px 0 0; font-size: 0.95rem; }
+
+/* Cassetto */
+.cassetto-vista { margin-top: 18px; }
+.cassetto-box { position: relative; padding-bottom: 6px; }
+.cassetto-carta {
+  padding: 28px 22px 22px;
+  color: var(--carta-testo);
+  background-color: var(--carta);
+  background-image: url("../img/carta/carta.webp");
+  background-size: 256px 256px;
+  background-blend-mode: multiply;
+  border: 1px solid var(--carta-bordo);
+  border-radius: 6px 6px 0 0;
+  box-shadow: var(--ombra);
+}
+html[data-tema="notte"] .cassetto-carta { background-image: none; }
+.cassetto-frase { margin: 0; }
+.cassetto-frase p { margin: 0; font-size: 1.3rem; line-height: 1.6; font-style: italic; overflow-wrap: break-word; }
+.cassetto-fonte { margin: 16px 0 0; font-weight: 600; }
+.cassetto-apri { margin: 4px 0 0; font-size: 0.9rem; color: var(--carta-tenue); }
+.cassetto-testo.cambia { animation: dissolvi 0.35s ease both; }
+.cassetto-fronte {
+  position: relative;
+  height: 58px;
+  border-radius: 0 0 14px 14px;
+  background: linear-gradient(180deg, var(--legno-chiaro), var(--legno) 45%, var(--legno-scuro));
+  border: 1px solid rgba(59, 42, 58, 0.35);
+  border-top: 0;
+  box-shadow: 0 6px 14px rgba(40, 20, 30, 0.28);
+}
+.cassetto-pomello { position: absolute; left: 50%; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--legno-chiaro), var(--legno-scuro) 80%); box-shadow: 0 2px 4px rgba(40, 20, 30, 0.45); }
+.cassetto-azioni { display: grid; gap: 10px; margin-top: 18px; }
+.cassetto-azioni .pulsante { width: 100%; font-family: inherit; cursor: pointer; }
+.cassetto-azioni .pulsante:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+/* il cassetto si apre: scorre verso chi guarda, il fronte esce per ultimo e il foglio sale (≈0,7 s) */
+.cassetto-vista.apre .cassetto-box { animation: cassetto-esce 0.7s ease both; }
+.cassetto-vista.apre .cassetto-fronte { animation: cassetto-fronte 0.7s ease both; }
+.cassetto-vista.apre .cassetto-carta { animation: cassetto-carta 0.6s ease 0.15s both; }
+.cassetto-vista.apre .cassetto-azioni { animation: dissolvi 0.4s ease 0.4s both; }
+.cassetto-vista.apre.salta .cassetto-box, .cassetto-vista.apre.salta .cassetto-fronte, .cassetto-vista.apre.salta .cassetto-carta, .cassetto-vista.apre.salta .cassetto-azioni { animation: none; }
+@keyframes cassetto-esce { from { opacity: 0; transform: translateY(34px); } to { opacity: 1; transform: none; } }
+@keyframes cassetto-fronte { from { transform: translateY(-16px); } to { transform: none; } }
+@keyframes cassetto-carta { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+/* Le parole tenute compaiono con una dissolvenza morbida solo all'apertura della scatola */
+.pannello.apre .parole-elenco li { animation: dissolvi 0.45s ease 0.15s both; }
+.pannello.apre.salta .parole-elenco li { animation: none; }
+
+/* ---------- Fase 5: Benvenuto, Sfondi, Il libro, Privacy, Se il peso diventa troppo ---------- */
+/* Benvenuto */
+.benvenuto-corpo { max-width: 430px; margin: 0 auto; padding: 10px 0 34px; text-align: center; animation: compare 0.6s ease both; }
+.benvenuto-busta {
+  position: relative; width: 74%; margin: calc(34px + env(safe-area-inset-top)) auto 0; aspect-ratio: 1.6 / 1;
+  display: flex; align-items: center; justify-content: center; transform: rotate(-1.8deg);
+  color: var(--busta-testo); background-color: var(--busta);
+  background-image: linear-gradient(rgba(255,255,255,0.45), rgba(255,255,255,0.45)), url("../img/carta/carta.webp");
+  background-size: auto, 256px 256px; background-blend-mode: normal, multiply;
+  border: 1px solid var(--busta-bordo); border-radius: 7px; box-shadow: var(--ombra); overflow: hidden;
+}
+.benvenuto-lembo { position: absolute; left: 0; right: 0; top: 0; height: 54%; background: var(--lembo); opacity: 0.35; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.benvenuto-titolo-busta { position: relative; padding: 18% 12% 0; font-style: italic; font-weight: 600; font-size: 1.2rem; line-height: 1.3; }
+.benvenuto-pannel, .benvenuto-pannello { margin-top: 22px; padding: 22px 20px 20px; }
+.benvenuto-intro { margin: 0; line-height: 1.6; text-align: left; }
+.benvenuto-pannello .benvenuto-intro { margin-top: 0; }
+.benvenuto-domanda { margin: 20px 0 10px; font-weight: 600; }
+.benvenuto-scelte { margin: 0; }
+.benvenuto-entra { width: 100%; margin-top: 22px; font-family: inherit; cursor: pointer; }
+.pannello .benvenuto-entra { display: flex; }
+.benvenuto-nota { margin: 14px 0 0; font-size: 0.95rem; color: var(--testo); }
+.aspetto button:focus-visible, .libro-chip:focus-visible, .sfondi-versione:focus-visible, .sfondo-anteprima:focus-visible, .sfondo-scarica:focus-visible, .anteprima-chiudi:focus-visible, .supporto a:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* Pagine di testo (Il libro, Privacy, Se il peso diventa troppo): stessa carta delle lettere */
+.pagina-info { margin-top: 10px; }
+.pagina-titolo { margin: 0 0 16px; font-size: 1.5rem; line-height: 1.25; font-weight: 700; }
+.pagina-sotto { margin: 1.4em 0 0.5em; font-size: 1.2rem; line-height: 1.3; }
+.entra-pagina { animation: scheda-apri 0.4s ease both; }
+.libro-sotto { margin-bottom: 1em; }
+.libro-filtro { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+.libro-chip { min-height: 44px; padding: 6px 14px; font: inherit; font-size: 0.98rem; font-weight: 600; color: var(--pulsante-testo); background: var(--pulsante); border: 1px solid var(--pulsante-bordo); border-radius: 999px; cursor: pointer; transition: background-color 0.2s ease; }
+.libro-chip[aria-pressed="true"] { background: var(--testo); color: var(--sfondo-pagina); border-color: var(--testo); }
+html:not([data-tema="notte"]) .libro-chip[aria-pressed="true"] { background: #3b2a3a; color: #fbf1e6; }
+html[data-tema="notte"] .libro-chip[aria-pressed="true"] { background: #fbf1e6; color: #1f1c3d; }
+.libro-parte-titolo { color: var(--carta-testo); margin: 1.5em 0 0.2em; font-size: 1.15rem; line-height: 1.3; }
+.libro-elenco.cambia { animation: dissolvi 0.3s ease both; }
+.libro-voci { margin-top: 0; }
+.privacy-cancella { margin-top: 1.6em; }
+.privacy-cancella .pulsante { width: 100%; font-family: inherit; cursor: pointer; }
+.privacy-bottoni { display: grid; gap: 10px; }
+.privacy-fatto { margin-top: 0.8em; }
+.supporto-elenco { margin: 0 0 0.8em; padding-left: 1.3em; font-size: 1.1875rem; line-height: 1.6; }
+.supporto-elenco li { margin: 0.25em 0; }
+.supporto-tel { margin-bottom: 0.3em; }
+.supporto-numero { white-space: nowrap; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.supporto-nota { margin: 1.6em 0 0; font-size: 0.95rem; line-height: 1.55; color: var(--carta-tenue); }
+.supporto-nota em { font-style: italic; }
+/* Riquadro di emergenza: primo elemento, sempre visibile, senza simboli di allarme; 112 con maggiore evidenza */
+.emergenza { margin: 0 0 1.4em; padding: 18px 18px 20px; border: 2px solid var(--cera); border-radius: 10px; background: rgba(138, 63, 88, 0.08); }
+html[data-tema="notte"] .emergenza { background: rgba(255, 255, 255, 0.07); border-color: var(--cera-chiara); }
+.emergenza-testo { margin: 0 0 0.8em; font-size: 1.1875rem; line-height: 1.55; }
+.chiama-112 { width: 100%; min-height: 58px; margin-top: 4px; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.01em; color: var(--cera-testo); background: var(--cera); border-color: var(--cera); }
+
+/* Sfondi */
+.sfondi-scelta { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.sfondi-versione { flex: 1 1 0; min-height: 46px; padding: 6px 12px; font: inherit; font-weight: 600; color: var(--pulsante-testo); background: var(--pulsante); border: 1px solid var(--pulsante-bordo); border-radius: 999px; cursor: pointer; }
+.sfondi-versione[aria-pressed="true"] { background: #3b2a3a; color: #fbf1e6; border-color: #3b2a3a; }
+html[data-tema="notte"] .sfondi-versione[aria-pressed="true"] { background: #fbf1e6; color: #1f1c3d; border-color: #fbf1e6; }
+.sfondi-griglia { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }
+.sfondo { min-width: 0; }
+.sfondo-anteprima { display: block; width: 100%; padding: 0; border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; background: var(--velo); cursor: zoom-in; box-shadow: var(--ombra); line-height: 0; }
+.sfondo-anteprima img { display: block; width: 100%; height: auto; aspect-ratio: 430 / 932; }
+.sfondo-anteprima img.cambia { animation: dissolvi 0.3s ease both; }
+.sfondo-nome { display: flex; align-items: center; justify-content: center; min-height: 2.6em; margin: 8px 0 0; font-size: 1rem; line-height: 1.3; text-align: center; }
+.sfondo-scarica { position: relative; width: 100%; margin-top: 8px; overflow: hidden; font-family: inherit; cursor: pointer; }
+.pannello .sfondo-scarica { display: flex; }
+.sfondo-scarica-testo { position: relative; }
+.sfondo-scarica-riempi { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: var(--cera); opacity: 0; transform: scaleX(0); transform-origin: left center; }
+.sfondo-scarica.scaricando .sfondo-scarica-riempi { animation: scarica-riempi 0.9s ease both; }
+@keyframes scarica-riempi { 0% { transform: scaleX(0); opacity: 0.28; } 70% { transform: scaleX(1); opacity: 0.28; } 100% { transform: scaleX(1); opacity: 0; } }
+.sfondo-esito { min-height: 1.4em; margin: 6px 0 0; font-size: 0.92rem; text-align: center; opacity: 0; transition: opacity 0.4s ease; }
+.sfondo-esito.visibile { opacity: 1; }
+.sfondi-istruzioni { margin-top: 18px; }
+.sfondi-istruzioni p { margin: 0 0 0.6em; line-height: 1.55; }
+.pannello.apre .sfondi-griglia li { animation: dissolvi 0.45s ease calc(0.12s + var(--i) * 0.05s) both; }
+.pannello.apre.salta .sfondi-griglia li { animation: none; }
+/* anteprima ingrandita */
+.anteprima { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 14px; background: rgba(20, 14, 30, 0.82); animation: dissolvi 0.3s ease both; }
+.anteprima img { max-width: 100%; max-height: 100%; width: auto; height: auto; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); }
+.anteprima-chiudi { position: absolute; top: 0; right: 0; bottom: 0; left: 0; border: 0; background: transparent; cursor: zoom-out; }
+body.anteprima-aperta { overflow: hidden; }
+
+/* ---------- Fase 6: «Condividi come cartolina» ---------- */
+.cartolina-riga { margin-top: 10px; }
+.cartolina-bottone { display: inline-flex; width: auto; min-width: 200px; font-family: inherit; cursor: pointer; }
+.cartolina-bottone:focus-visible, .cartolina-azioni .pulsante:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.cartolina-bottone[aria-busy="true"] { opacity: 0.7; cursor: progress; }
+.cartolina-esito-bottone { display: block; }
+.nascosto .cartolina-riga { margin-top: 10px; }
+.cartolina-dialogo { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 40; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 14px; background: rgba(20, 14, 30, 0.82); animation: dissolvi 0.3s ease both; }
+.cartolina-pannello { width: 100%; max-width: 420px; margin: auto; padding: 18px 16px 16px; border-radius: 14px; background: var(--pannello); color: var(--testo); text-align: center; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); }
+html:not([data-tema="notte"]) .cartolina-pannello { background: rgba(250, 241, 232, 0.97); }
+html[data-tema="notte"] .cartolina-pannello { background: rgba(40, 36, 84, 0.97); }
+.cartolina-titolo { margin: 0 0 12px; font-size: 1.25rem; line-height: 1.3; }
+.cartolina-immagine { display: block; width: auto; height: auto; max-width: 100%; max-height: 52vh; margin: 0 auto 14px; border-radius: 6px; box-shadow: var(--ombra); }
+.cartolina-esito { min-height: 1.5em; margin: 0 0 10px; font-size: 0.95rem; color: var(--testo); opacity: 0; transition: opacity 0.4s ease; }
+.cartolina-esito.visibile { opacity: 1; }
+.cartolina-azioni { display: grid; gap: 10px; }
+.cartolina-azioni .pulsante { width: 100%; font-family: inherit; cursor: pointer; }
+body.cartolina-aperta { overflow: hidden; }
+
+/* ---------- Movimento ridotto ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  .busta:hover, .busta:active, .pulsante:active, .sigillo:active { transform: none; }
+  /* con «riduci movimento» l'entrata della lettera è una semplice dissolvenza breve, le altre animazioni spariscono */
+  .vista.entra-dissolvi > .lettera { animation: dissolvi 0.35s ease both !important; }
+  .nascosto, .rif-extra { animation: dissolvi 0.3s ease both !important; }
+  .scoperta .oggetto-cornice, .scoperta > p, .scoperta > button { animation: dissolvi 0.35s ease both !important; }
+  .busta-mini:active { transform: none; }
+  .scheda-oggetto { animation: dissolvi 0.4s ease both !important; }
+  /* «Continua» e apertura della scatola: solo dissolvenza, senza ridimensionamenti né spostamenti */
+  .scoperta.esce { animation: esci-dissolvi 0.3s ease forwards !important; }
+  .pannello.apre { animation: dissolvi 0.35s ease both !important; }
+  .pannello.apre .griglia-oggetti li { animation: none !important; }
+  .pannello.apre.salta { animation: none !important; }
+  /* Fase 4: solo dissolvenze brevi, senza ridimensionamenti né spostamenti */
+  .tieni-esito { transition: opacity 0.3s ease !important; }
+  .tieni-cuore.batte, .tieni-cuore.sfuma { animation: cuore-sfuma 0.3s ease both !important; }
+  .parola-corpo { animation: dissolvi 0.3s ease both !important; }
+  .parola.esce { animation: esci-dissolvi 0.2s ease forwards !important; }
+  .pannello.apre .parole-elenco li { animation: none !important; }
+  .cassetto-testo.cambia { animation: dissolvi 0.3s ease both !important; }
+  .cassetto-vista.apre .cassetto-box { animation: dissolvi 0.35s ease both !important; }
+  .cassetto-vista.apre .cassetto-fronte, .cassetto-vista.apre .cassetto-carta, .cassetto-vista.apre .cassetto-azioni { animation: none !important; }
+  .cassetto-vista.apre.salta .cassetto-box { animation: none !important; }
+  /* Fase 5: solo dissolvenze brevi */
+  .benvenuto-corpo { animation: dissolvi 0.35s ease both !important; }
+  .entra-pagina { animation: dissolvi 0.35s ease both !important; }
+  .libro-elenco.cambia, .sfondo-anteprima img.cambia { animation: dissolvi 0.25s ease both !important; }
+  .pannello.apre .sfondi-griglia li { animation: none !important; }
+  .sfondo-scarica.scaricando .sfondo-scarica-riempi { animation: scarica-sfuma 0.6s ease both !important; transform: none; }
+  .sfondo-esito { transition: opacity 0.3s ease !important; }
+  .anteprima { animation: dissolvi 0.25s ease both !important; }
+  .cartolina-dialogo { animation: dissolvi 0.25s ease both !important; }
+  .cartolina-esito { transition: opacity 0.3s ease !important; }
+}
+@keyframes scarica-sfuma { 0% { opacity: 0; } 40% { opacity: 0.28; } 100% { opacity: 0; } }
+
+/* ---------- Schermi molto stretti ---------- */
+@media (max-width: 340px) {
+  .aspetto button { padding: 6px 10px; }
+}
